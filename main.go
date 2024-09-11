@@ -1,38 +1,37 @@
 package main
 
 import (
-	"fmt"
-	"kojin/utils"
-
-	"github.com/fatih/color"
+	"kojin/cmd"
 )
 
 func main() {
 
-	arguments, err := utils.GetArguments()
+	cmd.Execute()
 
-	if err != nil {
-		fmt.Println("Error while getting arguments", err)
-		return
-	}
+	// arguments, err := utils.GetArguments()
 
-	if arguments.Debug {
-		color.Yellow("Debug mode enabled")
-	}
-	if len(arguments.IgnoreList) > 0 {
-		color.Cyan("Ignoring folders: %v", arguments.IgnoreList)
-	}
+	// if err != nil {
+	// 	fmt.Println("Error while getting arguments", err)
+	// 	return
+	// }
 
-	rootFolder, err := utils.CreateFilesMap(arguments.FolderPath, 0, arguments.IgnoreList)
-	if err != nil {
-		fmt.Println("Error while walking through the folder", err)
-		return
-	}
+	// if arguments.Debug {
+	// 	color.Yellow("Debug mode enabled")
+	// }
+	// if len(arguments.IgnoreList) > 0 {
+	// 	color.Cyan("Ignoring folders: %v", arguments.IgnoreList)
+	// }
 
-	if arguments.Debug {
-		fmt.Println("Initial folder structure")
-		rootFolder.PrintTree("")
-	}
+	// rootFolder, err := utils.CreateFilesMap(arguments.FolderPath, 0, arguments.IgnoreList)
+	// if err != nil {
+	// 	fmt.Println("Error while walking through the folder", err)
+	// 	return
+	// }
 
-	rootFolder.WatchTree(arguments.FolderPath, arguments.Command, arguments.IgnoreList)
+	// if arguments.Debug {
+	// 	fmt.Println("Initial folder structure")
+	// 	rootFolder.PrintTree("")
+	// }
+
+	// rootFolder.WatchTree(arguments.FolderPath, arguments.Command, arguments.IgnoreList)
 }

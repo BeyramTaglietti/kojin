@@ -1,4 +1,4 @@
-package utils
+package watcher
 
 import (
 	"fmt"
@@ -57,12 +57,17 @@ func CreateFilesMap(folderPath string, folderLevel int, ignoredFolders []string)
 	return folder, nil
 }
 
-func (rootFolder *Folder) WatchTree(folderPath string, command string, ignoredFolders []string) {
-	ticker := time.NewTicker(1 * time.Second)
+type WatcherArguments struct {
+	IgnoredFolders []string
+	Frequency      int
+}
+
+func (rootFolder *Folder) WatchTree(folderPath string, command string, watcherArguments WatcherArguments) {
+	ticker := time.NewTicker(time.Duration(watcherArguments.Frequency) * time.Millisecond)
 	defer ticker.Stop()
 
 	for range ticker.C {
-		newRootFolder, err := CreateFilesMap(folderPath, 0, ignoredFolders)
+		newRootFolder, err := CreateFilesMap(folderPath, 0, watcherArguments.IgnoredFolders)
 		if err != nil {
 			fmt.Println("Error while walking through the folder:", err)
 			continue
@@ -82,6 +87,17 @@ func (rootFolder *Folder) WatchTree(folderPath string, command string, ignoredFo
 		}
 
 		rootFolder = &newRootFolder
+	}
+}
+
+func (f *Folder) PrintTree(indent string) {
+	fmt.Printf("%s%s/\n", indent, f.Name)
+	newIndent := indent + "  "
+	for _, file := range f.Files {
+		fmt.Printf("%s- %s (Modified: %s)\n", newIndent, file.Name, file.ModTime)
+	}
+	for _, subFolder := range f.Folders {
+		subFolder.PrintTree(newIndent)
 	}
 }
 
@@ -108,15 +124,4 @@ func compareTrees(oldFolder, newFolder Folder) (bool, string) {
 	}
 
 	return false, ""
-}
-
-func (f *Folder) PrintTree(indent string) {
-	fmt.Printf("%s%s/\n", indent, f.Name)
-	newIndent := indent + "  "
-	for _, file := range f.Files {
-		fmt.Printf("%s- %s (Modified: %s)\n", newIndent, file.Name, file.ModTime)
-	}
-	for _, subFolder := range f.Folders {
-		subFolder.PrintTree(newIndent)
-	}
 }
