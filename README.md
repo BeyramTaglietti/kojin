@@ -30,7 +30,7 @@ Then, when trying out [Gleam](https://gleam.run/), I couldn't stand having to ru
 ### command
 
 ```bash
-./kojin .src "gleam run" --ignore="build," --frequency 200 # run every 200 milliseconds and ignore the build folder/s
+./kojin ./src "gleam run" --frequency 200 # run every 200 milliseconds and ignore the build folder/s
 ```
 
 ### command structure
